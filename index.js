@@ -81,7 +81,7 @@ app.delete('/usuarios/:id', (req, res) => {
     res.json({ mensaje: "Usuario eliminado exitosamente" });
 });
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000; // Puerto configurable por variable de entorno
 app.listen(PORT, () => {
-    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+    console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
