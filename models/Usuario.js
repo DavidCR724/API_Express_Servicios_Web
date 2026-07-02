@@ -10,11 +10,10 @@ const usuarioSchema = new mongoose.Schema({
 
 // Antes de guardar, encriptamos el password (solo si cambió).
 // Esto cubre tanto la creación (POST) como la actualización (PUT) vía save().
-usuarioSchema.pre('save', async function (next) {
-    if (!this.isModified('password')) return next();
+usuarioSchema.pre('save', async function () {
+    if (!this.isModified('password')) return;
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
-    next();
 });
 
 // Método auxiliar para comparar un password en texto plano contra el encriptado.
