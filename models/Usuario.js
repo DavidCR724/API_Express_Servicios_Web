@@ -1,5 +1,11 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
+import { webcrypto } from 'node:crypto';
+
+// bcryptjs v3 usa la Web Crypto API global (globalThis.crypto). En Node 18 ese
+// objeto no existe por defecto y provoca el error "crypto is not defined" al
+// generar el salt. Lo definimos manualmente para funcionar también en Node 18/19.
+if (!globalThis.crypto) globalThis.crypto = webcrypto;
 
 // Colección Usuarios { _id, usuario, password, rol }
 const usuarioSchema = new mongoose.Schema({
@@ -16,7 +22,7 @@ usuarioSchema.pre('save', async function () {
     this.password = await bcrypt.hash(this.password, salt);
 });
 
-// Método auxiliar para comparar un password en texto plano contra el encriptado.
+// Método auxiliar para comparar  password en texto plano contra el encriptado.
 usuarioSchema.methods.compararPassword = function (passwordPlano) {
     return bcrypt.compare(passwordPlano, this.password);
 };
